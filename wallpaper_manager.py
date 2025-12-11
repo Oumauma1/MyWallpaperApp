@@ -51,7 +51,7 @@ class WallpaperManager:
             screen_height = win32api.GetSystemMetrics(win32con.SM_CYSCREEN)
             
             # 先调整窗口大小和位置，再设置父窗口
-            # 这样可以确保窗口在正确的位置和大小显示
+            # 这样可以确保窗口在正确的位置和大小显示，避免父窗口设置后调整大小时的视觉闪烁
             win32gui.MoveWindow(window_handle, 0, 0, screen_width, screen_height, True)
             
             # 设置窗口样式以确保正确嵌入

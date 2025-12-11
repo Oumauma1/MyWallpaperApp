@@ -166,7 +166,7 @@ class VideoWallpaperApp(QMainWindow):
         is_maximized = self.wp_manager.is_foreground_maximized()
         
         if is_maximized and self.player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
-            # 停止播放而不是暂停
+            # 停止播放而不是暂停，完全释放解码资源以节省CPU和内存
             self.player.stop()
         elif not is_maximized and self.player.playbackState() == QMediaPlayer.PlaybackState.StoppedState:
             # 从停止状态恢复时重新播放
