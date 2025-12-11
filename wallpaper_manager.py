@@ -46,11 +46,23 @@ class WallpaperManager:
             self._init_workerw()
         
         if self._workerw:
-            # 将目标窗口设为 WorkerW 的子窗口
-            win32gui.SetParent(window_handle, self._workerw)
-            # 调整大小以适应屏幕
+            # 获取屏幕尺寸
             screen_width = win32api.GetSystemMetrics(win32con.SM_CXSCREEN)
             screen_height = win32api.GetSystemMetrics(win32con.SM_CYSCREEN)
+            
+            # 先调整窗口大小和位置，再设置父窗口
+            # 这样可以确保窗口在正确的位置和大小显示
+            win32gui.MoveWindow(window_handle, 0, 0, screen_width, screen_height, True)
+            
+            # 设置窗口样式以确保正确嵌入
+            style = win32gui.GetWindowLong(window_handle, win32con.GWL_STYLE)
+            style = style & ~win32con.WS_CAPTION & ~win32con.WS_THICKFRAME
+            win32gui.SetWindowLong(window_handle, win32con.GWL_STYLE, style)
+            
+            # 将目标窗口设为 WorkerW 的子窗口
+            win32gui.SetParent(window_handle, self._workerw)
+            
+            # 再次确保位置和大小正确
             win32gui.MoveWindow(window_handle, 0, 0, screen_width, screen_height, True)
 
     def is_foreground_maximized(self):
