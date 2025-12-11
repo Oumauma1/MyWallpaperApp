@@ -51,7 +51,7 @@ Windows-specific implementation that:
 
 ## Platform Requirements
 
-- **Operating System**: Windows 11 (or Windows 10 with WorkerW support)
+- **Operating System**: Windows 10 or Windows 11 (requires WorkerW window support)
 - **Python Version**: Python 3.7+ (required for PyQt6)
 - The application is **Windows-only** due to its reliance on Win32 APIs and Windows' WorkerW window architecture
 
@@ -115,11 +115,11 @@ python main.py
 ```
 
 ### User Workflow
-1. Click "添加 MP4 视频" to add video files
+1. Click "添加 MP4 视频" (Add MP4 Video) to add video files
 2. Select a video from the list
 3. Set a trigger time using the time picker
-4. Click "更新选中视频的触发时间"
-5. Toggle "开启/关闭 动态壁纸模式" to activate
+4. Click "更新选中视频的触发时间" (Update Trigger Time for Selected Video)
+5. Toggle "🚀 开启/关闭 动态壁纸模式" (Enable/Disable Dynamic Wallpaper Mode) to activate
 6. Videos will automatically switch based on scheduled times
 
 ## Important Considerations for AI Assistance
