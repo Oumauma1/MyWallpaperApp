@@ -24,9 +24,13 @@ class VideoWallpaperApp(QMainWindow):
         # 视频渲染窗口 (这个窗口会被嵌入桌面)
         self.video_container = QWidget()
         self.video_container.setWindowFlags(Qt.WindowType.FramelessWindowHint)
-        self.video_widget = QVideoWidget(self.video_container)
-        # 初始大小，后续会自适应
-        self.video_widget.resize(1920, 1080) 
+        
+        # 使用布局管理器确保视频widget自动填充容器
+        container_layout = QVBoxLayout(self.video_container)
+        container_layout.setContentsMargins(0, 0, 0, 0)
+        self.video_widget = QVideoWidget()
+        container_layout.addWidget(self.video_widget)
+        
         self.player.setVideoOutput(self.video_widget)
         
         # 默认静音 (壁纸通常不需要声音)
@@ -130,11 +134,10 @@ class VideoWallpaperApp(QMainWindow):
                 self.btn_toggle.setChecked(False)
                 return
             
-            self.video_container.show()
             # 获取窗口句柄并嵌入桌面 (黑魔法)
             hwnd = int(self.video_container.winId())
             self.wp_manager.set_window_as_wallpaper(hwnd)
-            self.video_widget.resize(self.video_container.size())
+            self.video_container.show()
             
             # 启动时检查一次应该放哪个
             self.check_schedule(force_start=True)
@@ -156,15 +159,17 @@ class VideoWallpaperApp(QMainWindow):
             self.player.play()
 
     def check_performance_optimization(self):
-        """核心功能2：当有全屏/最大化应用时暂停"""
+        """核心功能2：当有全屏/最大化应用时停止"""
         if not self.is_wallpaper_mode:
             return
 
         is_maximized = self.wp_manager.is_foreground_maximized()
         
         if is_maximized and self.player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
-            self.player.pause()
-        elif not is_maximized and self.player.playbackState() == QMediaPlayer.PlaybackState.PausedState:
+            # 停止播放而不是暂停，完全释放解码资源以节省CPU和内存
+            self.player.stop()
+        elif not is_maximized and self.player.playbackState() == QMediaPlayer.PlaybackState.StoppedState:
+            # 从停止状态恢复时重新播放
             self.player.play()
 
     def check_schedule(self, force_start=False):
